@@ -7,11 +7,17 @@ Authentication only works with **Android Mobile / Android TV**
 
 ### For Android / Android TV version
 
-Pre-made **FireBaseAuth credentials**:
-Username: abcd@gmail.com
+Pre-made **FireBaseAuth credentials**:</br>
+Username: abcd@gmail.com</br>
 password: 123456
 
 OR
 
 Use the SIGNUP feature to make a new account.
+
+### For IOS version
+
+**Hardcoded credentials**:</br>
+Username: ios
+password: 123
 
