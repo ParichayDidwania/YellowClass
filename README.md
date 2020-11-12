@@ -18,6 +18,6 @@ Use the SIGNUP feature to make a new account.
 ### For IOS version
 
 **Hardcoded credentials**:</br>
-Username: ios
-password: 123
+Username: ios</br>
+password: 123</br>
 
