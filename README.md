@@ -5,3 +5,13 @@ The existing solutions for installing cocoapod on windows did not work (tried al
 
 Authentication only works with **Android Mobile / Android TV**
 
+### For Android / Android TV version
+
+Pre-made **FireBaseAuth credentials**:
+Username: abcd@gmail.com
+password: 123456
+
+OR
+
+Use the SIGNUP feature to make a new account.
+
