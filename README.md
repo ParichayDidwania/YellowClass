@@ -1,16 +1,23 @@
-# yellow_class
+# Yellow Class
 
-A new Flutter application.
+This Flutter Application is made on **Windows OS** thus Firebase connection with IOS using cocoapod **was NOT feasible** as a MacOS is required for it.
+The existing solutions for installing cocoapod on windows did not work (tried all existing solutions and workarounds).
 
-## Getting Started
+Authentication only works with **Android Mobile / Android TV**
 
-This project is a starting point for a Flutter application.
+### For Android / Android TV version
 
-A few resources to get you started if this is your first Flutter project:
+Pre-made **FireBaseAuth credentials**:</br>
+Username: abcd@gmail.com</br>
+password: 123456
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+OR
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Use the SIGNUP feature to make a new account.
+
+### For IOS version
+
+**Hardcoded credentials**:</br>
+Username: ios</br>
+password: 123</br>
+
