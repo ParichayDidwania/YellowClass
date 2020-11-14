@@ -7,9 +7,14 @@ import 'package:flutter/services.dart';
 import 'package:volume/volume.dart';
 import 'dart:async';
 import 'dart:io' show Platform;
+import 'package:camera/camera.dart';
+import 'package:native_device_orientation/native_device_orientation.dart';
+
 
 
 final FirebaseAuth auth = FirebaseAuth.instance;
+CameraController cameraController;
+List<CameraDescription> cameras;
 
 void main() {
   runApp(MaterialApp(
@@ -17,6 +22,22 @@ void main() {
     debugShowCheckedModeBanner: false,
   ));
 }
+
+Future<bool> camsetup() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  cameras = await availableCameras();
+  try {
+    cameraController = CameraController(cameras[1], ResolutionPreset.medium);
+    Future<bool> b = cameraController.initialize().then((value) {
+      return true;
+    });
+    return b;
+  }catch(e)
+  {
+    return null;
+  }
+}
+
 
 class homepage extends StatefulWidget {
   @override
@@ -89,7 +110,12 @@ class _homepageState extends State<homepage> {
                     ),
                     color: Colors.transparent,
                     padding: EdgeInsets.symmetric(horizontal: 55,vertical: 15),
-                    onPressed: (){},
+                    onPressed: (){
+                      Navigator.push(context, MaterialPageRoute
+                        (builder: (context){
+                        return signup();
+                      }));
+                    },
                     child: Text("SIGNUP",
                       style: TextStyle(
                           fontSize: 20,
@@ -122,6 +148,8 @@ class _loginState extends State<login> {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
+    user.clear();
+    pass.clear();
     super.initState();
   }
 
@@ -156,6 +184,7 @@ class _loginState extends State<login> {
                   Container(
                     margin: EdgeInsets.fromLTRB(0, 0, 20, 20),
                     child: TextField(
+
                       controller: user,
                       style: TextStyle(
                         fontSize: 20
@@ -223,10 +252,11 @@ class _loginState extends State<login> {
                       onPressed: () async{
                       int flag=1;
                         if (Platform.isIOS) {
-                        // iOS-specific code
                           if(user.text=='ios' && pass.text=='123')
                             {
                               flag=0;
+                              user.clear();
+                              pass.clear();
                               Navigator.push(context, MaterialPageRoute(builder: (context){
                                 return playvid();
                               }));
@@ -243,10 +273,12 @@ class _loginState extends State<login> {
                         }
                         catch(e){
                           setState(() {
+                            String err = e.toString();
+                            List errors = err.split(",");
                             if(flag==1)
                               {
                                 Fluttertoast.showToast(
-                                    msg: 'Incorrect username or password',
+                                    msg: errors[1],
                                     toastLength: Toast.LENGTH_SHORT,
                                     gravity: ToastGravity.BOTTOM,
                                     timeInSecForIos: 1,
@@ -265,6 +297,8 @@ class _loginState extends State<login> {
                                 timeInSecForIos: 1,
                                 backgroundColor: Colors.black87,
                                 textColor: Colors.amberAccent);
+                            user.clear();
+                            pass.clear();
                             Navigator.push(context, MaterialPageRoute(builder: (context){
                               return playvid();
                             }));
@@ -289,6 +323,184 @@ class _loginState extends State<login> {
     );;
   }
 }
+
+class signup extends StatefulWidget {
+  @override
+  _signupState createState() => _signupState();
+}
+
+class _signupState extends State<signup> {
+  final user = TextEditingController();
+  final pass = TextEditingController();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SingleChildScrollView(
+        child: Stack(
+          children: [
+            Container(
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              color: Colors.black87,
+            ),
+            Container(
+              margin: EdgeInsets.fromLTRB(20, 100, 0, 0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Container(
+                    margin: EdgeInsets.fromLTRB(0, 0, 0, 100),
+                    alignment: Alignment.topCenter,
+                    child: Text(
+                      "CREATE AN ACCOUNT",
+                      style: TextStyle(
+                          fontFamily: 'CustomFamilyName',
+                          fontSize: 30,
+                          color: Colors.amberAccent
+                      ),
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.fromLTRB(0, 0, 20, 20),
+                    child: TextField(
+                      controller: user,
+                      style: TextStyle(
+                          fontSize: 20
+                      ),
+                      cursorColor: Colors.amberAccent,
+                      decoration: InputDecoration(
+                        hintText: "Username",
+                        contentPadding: EdgeInsets.symmetric(vertical: 0,horizontal: 5),
+                        fillColor: Colors.white,
+                        filled: true,
+                        prefixIcon: Icon(Icons.mail,
+                          color: Colors.amberAccent,),
+                        enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.amberAccent, width: 2),
+                            borderRadius: BorderRadius.circular(10)
+                        ),
+                        focusedBorder:
+                        OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.amberAccent, width: 2),
+                            borderRadius: BorderRadius.circular(10)
+
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  Container(
+                    margin: EdgeInsets.fromLTRB(0, 0, 20, 40),
+                    child: TextField(
+                      controller: pass,
+                      style: TextStyle(
+                          fontSize: 20
+                      ),
+                      cursorColor: Colors.amberAccent,
+                      obscureText: true,
+                      decoration: InputDecoration(
+                        hintText: "Password",
+                        contentPadding: EdgeInsets.symmetric(vertical: 0,horizontal: 5),
+                        fillColor: Colors.white,
+                        filled: true,
+                        prefixIcon: Icon(Icons.lock,
+                          color: Colors.amberAccent,),
+                        enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.amberAccent, width: 2),
+                            borderRadius: BorderRadius.circular(10)
+                        ),
+                        focusedBorder:
+                        OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.amberAccent, width: 2),
+                            borderRadius: BorderRadius.circular(10)
+
+                        ),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.fromLTRB(0, 0, 20, 0),
+                    child: RaisedButton(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                          side: BorderSide(color: Colors.amberAccent,width: 1)
+                      ),
+                      color: Colors.transparent,
+                      padding: EdgeInsets.symmetric(horizontal: 55,vertical: 15),
+                      onPressed: () async{
+                        int flag=1;
+                        //final FirebaseUser user = await auth.currentUser();
+                        FirebaseUser firebaseuser = null;
+                        try {
+                          firebaseuser = (await auth
+                              .createUserWithEmailAndPassword(
+                            email: user.text,
+                            password: pass.text,
+                          )).user;
+                        }
+                        catch(e){
+                          setState(() {
+                            String err = e.toString();
+                            List errors = err.split(",");
+                            if(flag==1)
+                            {
+                              Fluttertoast.showToast(
+                                  msg: errors[1],
+                                  toastLength: Toast.LENGTH_SHORT,
+                                  gravity: ToastGravity.BOTTOM,
+                                  timeInSecForIos: 1,
+                                  backgroundColor: Colors.black87,
+                                  textColor: Colors.amberAccent);
+                            }
+                          }
+                          );
+                        }
+                        if (firebaseuser != null) {
+                          setState(() {
+                            Fluttertoast.showToast(
+                                msg: 'Account created successfully!',
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.BOTTOM,
+                                timeInSecForIos: 1,
+                                backgroundColor: Colors.black87,
+                                textColor: Colors.amberAccent);
+                            user.clear();
+                            pass.clear();
+                            Navigator.push(context, MaterialPageRoute(builder: (context){
+                              return playvid();
+                            }));
+                          });
+                        }
+                      }
+                      ,
+                      child: Text("SIGN UP",
+                        style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.amberAccent
+                        ),),
+                    ),
+                  )
+                ],
+              ),
+            )
+          ],
+
+        ),
+      ),
+    );
+  }
+}
+
 
 class playvid extends StatefulWidget {
   @override
@@ -324,9 +536,20 @@ class _playvidState extends State<playvid> {
                   icon: Icon(Icons.play_circle_fill),
                   iconSize: 150,
                   color: Colors.amberAccent,
-                  onPressed: (){
+                  onPressed: () async{
+                    bool done = await camsetup();
+                    if(done==null)
+                      {
+                        Fluttertoast.showToast(
+                            msg: 'No Camera Feed Detected',
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.BOTTOM,
+                            timeInSecForIos: 1,
+                            backgroundColor: Colors.black87,
+                            textColor: Colors.amberAccent);
+                      }
                     Navigator.push(context, MaterialPageRoute(builder: (context){
-                      return videorunning();
+                    return videorunning();
                     }));
                   }),
             ),
@@ -354,6 +577,14 @@ class videorunning extends StatefulWidget {
 
 class _videorunningState extends State<videorunning> {
 
+  List<int> l = [1,0];
+
+  Future<void> orien() async {
+    final orientation = await NativeDeviceOrientationCommunicator().orientation(
+        useSensor: true);
+    print(orientation);
+  }
+
   Timer _timer;
   void startTimer(int _start) {
     const oneSec = const Duration(seconds: 1);
@@ -378,6 +609,7 @@ class _videorunningState extends State<videorunning> {
   int maxVol, currentVol;
   var val=1;
   bool _visible = true;
+  bool useSensor = false;
 
   @override
   void initState() {
@@ -414,6 +646,8 @@ class _videorunningState extends State<videorunning> {
     await Volume.setVol(i, showVolumeUI: ShowVolumeUI.HIDE);
   }
 
+
+
   @override
   dispose(){
     SystemChrome.setPreferredOrientations([
@@ -421,8 +655,12 @@ class _videorunningState extends State<videorunning> {
     ]);
     SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
     controller.dispose();
+    cameraController.dispose();
     super.dispose();
   }
+
+  double xpos=0.0;
+  double ypos=0.0;
 
   @override
   Widget build(BuildContext context) {
@@ -449,6 +687,104 @@ class _videorunningState extends State<videorunning> {
                           child: VideoPlayer(controller),
                       ),
                         ),
+
+                        Positioned(
+                            bottom: ypos,
+                               right: xpos,
+                               child: NativeDeviceOrientationReader(
+                                 builder: (context) {
+                                   final orientation =
+                                   NativeDeviceOrientationReader.orientation(context);
+                                   print('Received new orientation: $orientation');
+                                   if('$orientation'=='NativeDeviceOrientation.landscapeLeft')
+                                     {
+                                       l[0]=1;
+                                       l[1]=0;
+                                       return GestureDetector(
+                                         onPanUpdate: (tapInfo) {
+                                           setState(() {
+                                             xpos -= tapInfo.delta.dx;
+                                             ypos -= tapInfo.delta.dy;
+                                           });
+                                         },
+                                         child: RotatedBox(
+                                           quarterTurns: 3,
+                                           child: Container(
+                                             height: 150,
+                                             width:150,
+                                             child: cameraController==null ? Text("") :CameraPreview(cameraController),
+                                           ),
+                                         ),
+                                       );
+                                     }
+                                   else if('$orientation'=='NativeDeviceOrientation.landscapeRight')
+                                     {
+                                       l[0]=0;
+                                       l[1]=1;
+                                       return GestureDetector(
+                                         onPanUpdate: (tapInfo) {
+                                           setState(() {
+                                             xpos -= tapInfo.delta.dx;
+                                             ypos -= tapInfo.delta.dy;
+                                           });
+                                         },
+                                         child: RotatedBox(
+                                           quarterTurns: 1,
+                                           child: Container(
+                                             height: 150,
+                                             width:150,
+                                             child: cameraController==null ? Text("") :CameraPreview(cameraController),
+                                           ),
+                                         ),
+                                       );
+                                     }
+                                   else
+                                     {
+                                       if(l[0]==1)
+                                         {
+                                           return GestureDetector(
+                                             onPanUpdate: (tapInfo) {
+                                               setState(() {
+                                                 xpos -= tapInfo.delta.dx;
+                                                 ypos -= tapInfo.delta.dy;
+                                               });
+                                             },
+                                             child: RotatedBox(
+                                               quarterTurns: 3,
+                                               child: Container(
+                                                 height: 150,
+                                                 width:150,
+                                                 child: cameraController==null ? Text("") :CameraPreview(cameraController),
+                                               ),
+                                             ),
+                                           );
+                                         }
+                                       else
+                                         {
+                                           return GestureDetector(
+                                             onPanUpdate: (tapInfo) {
+                                               setState(() {
+                                                 xpos -= tapInfo.delta.dx;
+                                                 ypos -= tapInfo.delta.dy;
+                                               });
+                                             },
+                                             child: RotatedBox(
+                                               quarterTurns: 1,
+                                               child: Container(
+                                                 height: 150,
+                                                 width:150,
+                                                 child: cameraController==null ? Text("") :CameraPreview(cameraController),
+                                               ),
+                                             ),
+                                           );
+                                         }
+                                     }
+                                 },
+                                 useSensor: true,
+                               ),
+                          ),
+
+
                         Container(
                           margin: EdgeInsets.symmetric(horizontal: 0,vertical: 50),
                           child: Row(
@@ -481,6 +817,7 @@ class _videorunningState extends State<videorunning> {
                             ]
                           ),
                         ),
+
                       ]
                     );
                 }
