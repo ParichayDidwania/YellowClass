@@ -662,6 +662,36 @@ class _videorunningState extends State<videorunning> {
   double xpos=0.0;
   double ypos=0.0;
 
+  void changePos(DragUpdateDetails tapinfo)
+  {
+    if(xpos-tapinfo.delta.dx<0)
+      {
+        xpos=0;
+      }
+    else if(xpos-tapinfo.delta.dx>(MediaQuery.of(context).size.width-150))
+      {
+        xpos=MediaQuery.of(context).size.width-150;
+      }
+    else
+      {
+        xpos-=tapinfo.delta.dx;
+      }
+
+    if(ypos-tapinfo.delta.dy<0)
+    {
+      ypos=0;
+    }
+    else if(ypos-tapinfo.delta.dy>(MediaQuery.of(context).size.height-150))
+    {
+      ypos=MediaQuery.of(context).size.height-150;
+    }
+    else
+    {
+      ypos-=tapinfo.delta.dy;
+    }
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -703,8 +733,7 @@ class _videorunningState extends State<videorunning> {
                                        return GestureDetector(
                                          onPanUpdate: (tapInfo) {
                                            setState(() {
-                                             xpos -= tapInfo.delta.dx;
-                                             ypos -= tapInfo.delta.dy;
+                                             changePos(tapInfo);
                                            });
                                          },
                                          child: RotatedBox(
@@ -724,8 +753,7 @@ class _videorunningState extends State<videorunning> {
                                        return GestureDetector(
                                          onPanUpdate: (tapInfo) {
                                            setState(() {
-                                             xpos -= tapInfo.delta.dx;
-                                             ypos -= tapInfo.delta.dy;
+                                             changePos(tapInfo);
                                            });
                                          },
                                          child: RotatedBox(
@@ -745,8 +773,7 @@ class _videorunningState extends State<videorunning> {
                                            return GestureDetector(
                                              onPanUpdate: (tapInfo) {
                                                setState(() {
-                                                 xpos -= tapInfo.delta.dx;
-                                                 ypos -= tapInfo.delta.dy;
+                                                 changePos(tapInfo);
                                                });
                                              },
                                              child: RotatedBox(
@@ -764,8 +791,7 @@ class _videorunningState extends State<videorunning> {
                                            return GestureDetector(
                                              onPanUpdate: (tapInfo) {
                                                setState(() {
-                                                 xpos -= tapInfo.delta.dx;
-                                                 ypos -= tapInfo.delta.dy;
+                                                 changePos(tapInfo);
                                                });
                                              },
                                              child: RotatedBox(
